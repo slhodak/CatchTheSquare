@@ -12,11 +12,21 @@ import RealityKit
 class Game: ObservableObject {
     @Published var grid = [Int: [Int: Square]]()
     @Published var rootEntity = Entity()
+    var target: Square?
+    var timer: Timer?
     
     let gridX = 10
     let gridY = 10
     let gridSpacing: Float = 0.06
     let squareSize: Float = 0.05
+    
+    init() {
+        self.timer = Timer.scheduledTimer(timeInterval: 3,
+                                          target: self,
+                                          selector: #selector(setTarget),
+                                          userInfo: nil,
+                                          repeats: true)
+    }
     
     func setup(content: RealityViewContent) {
         rootEntity.position.x = -0.5
@@ -59,5 +69,19 @@ class Game: ObservableObject {
         }
         
         square.handleClick()
+    }
+    
+    @objc func setTarget() {
+        if let target = target {
+            target.isTarget = false
+        }
+        
+        let randomX = Int.random(in: 0..<gridX)
+        let randomY = Int.random(in: 0..<gridY)
+        if let row = grid[randomX],
+           let square = row[randomY] {
+            square.isTarget = true
+            target = square
+        }
     }
 }

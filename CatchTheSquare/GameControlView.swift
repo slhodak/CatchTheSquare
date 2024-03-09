@@ -30,7 +30,7 @@ struct GameControlView: View {
         }
         .padding()
         .sheet(isPresented: $game.showScoreView) {
-            ScoreView(score: game.score)
+            ScoreView(game: game)
         }
     }
 }

@@ -16,6 +16,7 @@
 		17315E772B9BBA4800DA4B66 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17315E762B9BBA4800DA4B66 /* Game.swift */; };
 		17315E792B9BBA6700DA4B66 /* Square.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17315E782B9BBA6700DA4B66 /* Square.swift */; };
 		176FFCEF2B9CF1F10022A7C3 /* ScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176FFCEE2B9CF1F10022A7C3 /* ScoreView.swift */; };
+		176FFCF12B9D1B6F0022A7C3 /* Score.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176FFCF02B9D1B6F0022A7C3 /* Score.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		17315E762B9BBA4800DA4B66 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		17315E782B9BBA6700DA4B66 /* Square.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Square.swift; sourceTree = "<group>"; };
 		176FFCEE2B9CF1F10022A7C3 /* ScoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreView.swift; sourceTree = "<group>"; };
+		176FFCF02B9D1B6F0022A7C3 /* Score.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Score.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				17315E6B2B9BA7A300DA4B66 /* Assets.xcassets */,
 				17315E702B9BA7A300DA4B66 /* Info.plist */,
 				17315E6D2B9BA7A300DA4B66 /* Preview Content */,
+				176FFCF02B9D1B6F0022A7C3 /* Score.swift */,
 			);
 			path = CatchTheSquare;
 			sourceTree = "<group>";
@@ -166,6 +169,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				176FFCF12B9D1B6F0022A7C3 /* Score.swift in Sources */,
 				17315E682B9BA7A100DA4B66 /* GameControlView.swift in Sources */,
 				17315E662B9BA7A100DA4B66 /* CatchTheSquareApp.swift in Sources */,
 				17315E6A2B9BA7A100DA4B66 /* GameView.swift in Sources */,

@@ -13,14 +13,15 @@ class Game: ObservableObject {
     @Published var grid = [Int: [Int: Square]]()
     @Published var rootEntity = Entity()
     @Published var showScoreView: Bool = false
+    var realityViewContent: RealityViewContent?
     var freeSquares = Set<Square>()
     var target: Square?
     var setTargetAfter: TimeInterval = 3.0
     var running = false
-    var score = Score() // find a way to publish this
+    var score = Score()
     
-    let gridX = 10
-    let gridY = 10
+    let gridX = 2
+    let gridY = 2
     let gridSpacing: Float = 0.06
     let squareSize: Float = 0.05
     
@@ -28,14 +29,32 @@ class Game: ObservableObject {
         rootEntity.position.x = (Float(gridX) * gridSpacing) / 2 * -1
         rootEntity.position.z = 0
         rootEntity.position.y = (Float(gridY) * gridSpacing) / 2 * -1
+        realityViewContent = content
         content.add(rootEntity)
+        initGrid()
+    }
+    
+    func erase() {
+        for (_, row) in grid {
+            for (_, square) in row {
+                square.model.removeFromParent()
+                freeSquares.remove(square)
+            }
+        }
+        
+        realityViewContent?.remove(rootEntity)
     }
     
     func start() {
-        erase()
-        initGrid()
+        cleanSlate()
         running = true
         startTimer()
+    }
+    
+    func cleanSlate() {
+        erase()
+        initGrid()
+        realityViewContent?.add(rootEntity)
     }
     
     private func initGrid() {
@@ -120,22 +139,6 @@ class Game: ObservableObject {
     
     func handleGameOver() {
         running = false
-        DispatchQueue.main.async {
-            self.showScoreView = true
-        }
+        self.showScoreView = true
     }
-    
-    private func erase() {
-        for (_, row) in grid {
-            for (_, square) in row {
-                square.model.removeFromParent()
-            }
-        }
-    }
-}
-
-class Score {
-    var hit: Int = 0
-    var wrong: Int = 0
-    var missed: Int = 0
 }

@@ -17,6 +17,7 @@ struct ScoreView: View {
         self.score = game.score
         self.game = game
     }
+    
     var body: some View {
         VStack {
             // add grid image of final where completed is green

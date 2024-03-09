@@ -51,23 +51,20 @@ class Square: Hashable {
         self.column = column
     }
     
-    func handleClick() {
+    func click() {
         isClicked = true
         model.model?.materials = [Self.clickedMaterial]
-        
-        if isTarget {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                self.model.removeFromParent()
-            }
-        } else {
-            lock(afterDelay: true)
+    }
+    
+    func remove() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            self.model.removeFromParent()
         }
     }
     
-    func lock(afterDelay: Bool) {
+    func lock() {
         isLocked = true
-        let deadline: DispatchTime = afterDelay ? .now() + 0.4 : .now()
-        DispatchQueue.main.asyncAfter(deadline: deadline) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4 ) {
             self.model.model?.materials = [Self.lockedMaterial]
         }
     }

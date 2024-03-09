@@ -11,11 +11,13 @@ import RealityKitContent
 
 
 struct GameView: View {
-    @ObservedObject var game = Game()
+    @ObservedObject var game: Game
+    @Environment(\.openWindow) var openWindow
     
     var body: some View {
         RealityView { content in
             game.setup(content: content)
+            openWindow(id: "GameControlWindow")
         }
         .gesture(spatialTapToAny)
     }
@@ -39,6 +41,6 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView()
+    GameView(game: Game())
         .previewLayout(.sizeThatFits)
 }

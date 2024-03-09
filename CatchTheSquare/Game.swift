@@ -12,10 +12,11 @@ import RealityKit
 class Game: ObservableObject {
     @Published var grid = [Int: [Int: Square]]()
     @Published var rootEntity = Entity()
+    @Published var showScoreView: Bool = false
     var freeSquares = Set<Square>()
     var target: Square?
     var setTargetAfter: TimeInterval = 3.0
-    var running = true
+    var running = false
     var score = Score() // find a way to publish this
     
     let gridX = 10
@@ -23,22 +24,24 @@ class Game: ObservableObject {
     let gridSpacing: Float = 0.06
     let squareSize: Float = 0.05
     
-    init() {
-        startTimer()
-    }
-    
     func setup(content: RealityViewContent) {
-        rootEntity.position.x = -0.5
-        rootEntity.position.z = -1.5
-        rootEntity.position.y = 1
-        initGrid()
+        rootEntity.position.x = (Float(gridX) * gridSpacing) / 2 * -1
+        rootEntity.position.z = 0
+        rootEntity.position.y = (Float(gridY) * gridSpacing) / 2 * -1
         content.add(rootEntity)
     }
     
+    func start() {
+        erase()
+        initGrid()
+        running = true
+        startTimer()
+    }
+    
     private func initGrid() {
-        for i in 0...gridX {
+        for i in 0..<gridX {
             var row = [Int: Square]()
-            for j in 0...gridY {
+            for j in 0..<gridY {
                 let square = Square(size: squareSize, row: i, column: j)
                 square.model.position.x = Float(i) * gridSpacing
                 square.model.position.y = Float(j) * gridSpacing
@@ -52,41 +55,46 @@ class Game: ObservableObject {
     }
     
     func handleClick(row i: Int, column j: Int) {
-        guard var row = grid[i] else {
-            print("No row at \(i)")
-            print(grid)
-            return
-        }
+        guard let square = getClickedSquare(row: i, column: j) else { return }
         
-        guard j < row.count else {
-            print("Invalid column value: \(j) outside range")
-            return
-        }
-        
-        guard let square = row[j] else {
-            print("No square at \(i),\(j)")
-            return
-        }
-        
-        square.handleClick()
         freeSquares.remove(square)
         
+        square.click()
         if square.isTarget {
-            row[j] = nil
-            score.hit += 1
+            square.remove()
             setTargetAfter = setTargetAfter * 0.98
+            score.hit += 1
         } else {
+            square.lock()
             score.wrong += 1
         }
         
         // Check end condition
-        if freeSquares.isEmpty ||
-            setTargetAfter <= 0.25 {
+        if freeSquares.isEmpty || setTargetAfter <= 0.25 {
             handleGameOver()
         }
     }
     
-    func startTimer() {
+    private func getClickedSquare(row i: Int, column j: Int) -> Square? {
+        guard let row = grid[i] else {
+            print("No row at \(i)")
+            return nil
+        }
+        
+        guard j < row.count else {
+            print("Invalid column value: \(j) outside range")
+            return nil
+        }
+        
+        guard let square = row[j] else {
+            print("No square at \(i),\(j)")
+            return nil
+        }
+        
+        return square
+    }
+    
+    private func startTimer() {
         guard running else { return }
         
         setTarget()
@@ -95,12 +103,10 @@ class Game: ObservableObject {
         }
     }
     
-    func setTarget() {
+    private func setTarget() {
         if let target = target {
             if !target.isClicked {
                 score.missed += 1
-//                target.lock(afterDelay: false)
-//                freeSquares.remove(target)
             }
             target.isTarget = false
         }
@@ -113,9 +119,18 @@ class Game: ObservableObject {
     }
     
     func handleGameOver() {
-        print("Game Over!")
         running = false
-        print(score)
+        DispatchQueue.main.async {
+            self.showScoreView = true
+        }
+    }
+    
+    private func erase() {
+        for (_, row) in grid {
+            for (_, square) in row {
+                square.model.removeFromParent()
+            }
+        }
     }
 }
 

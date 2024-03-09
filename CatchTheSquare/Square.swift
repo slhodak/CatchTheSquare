@@ -38,7 +38,7 @@ class Square: Hashable {
     }
     
     init(size: Float, row: Int, column: Int) {
-        let mesh = MeshResource.generatePlane(width: size, height: size)
+        let mesh = MeshResource.generateBox(width: size, height: size, depth: size * 0.1, cornerRadius: 0.05)
         let model = ModelEntity(mesh: mesh, materials: [Self.basicMaterial])
         model.components.set(CollisionComponent(shapes: [.generateBox(width: size, height: size, depth: size * 0.1)]))
         model.components.set(HoverEffectComponent())

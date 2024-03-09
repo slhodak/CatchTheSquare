@@ -19,7 +19,11 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
+            Text("\(.init(systemName: "eye")) \(.init(systemName: "arrow.forward")) \(.init(systemName: "cursor.rays")) \(.init(systemName: "arrow.forward")) \( .init(systemName: "rectangle.inset.filled.and.cursorarrow"))")
+                .font(.largeTitle)
+            
             Toggle(immersiveSpaceIsShown ? "Exit" : "Play", isOn: $showImmersiveSpace)
+                .font(.largeTitle)
                 .toggleStyle(.button)
                 .padding()
         }

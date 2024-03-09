@@ -70,9 +70,11 @@ class Game: ObservableObject {
         
         square.handleClick()
         freeSquares.remove(square)
+        
         if square.isTarget {
             row[j] = nil
             score.hit += 1
+            setTargetAfter = setTargetAfter * 0.98
         } else {
             score.wrong += 1
         }
@@ -88,7 +90,6 @@ class Game: ObservableObject {
         guard running else { return }
         
         setTarget()
-        setTargetAfter = setTargetAfter * 0.98
         DispatchQueue.main.asyncAfter(deadline: .now() + setTargetAfter) {
             self.startTimer()
         }
@@ -98,6 +99,8 @@ class Game: ObservableObject {
         if let target = target {
             if !target.isClicked {
                 score.missed += 1
+//                target.lock(afterDelay: false)
+//                freeSquares.remove(target)
             }
             target.isTarget = false
         }

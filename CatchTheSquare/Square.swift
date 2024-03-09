@@ -56,12 +56,19 @@ class Square: Hashable {
         model.model?.materials = [Self.clickedMaterial]
         
         if isTarget {
-            model.removeFromParent()
-        } else {
-            isLocked = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                self.model.model?.materials = [Self.lockedMaterial]
+                self.model.removeFromParent()
             }
+        } else {
+            lock(afterDelay: true)
+        }
+    }
+    
+    func lock(afterDelay: Bool) {
+        isLocked = true
+        let deadline: DispatchTime = afterDelay ? .now() + 0.4 : .now()
+        DispatchQueue.main.asyncAfter(deadline: deadline) {
+            self.model.model?.materials = [Self.lockedMaterial]
         }
     }
 }

@@ -12,8 +12,11 @@ import RealityKit
 class Game: ObservableObject {
     @Published var grid = [Int: [Int: Square]]()
     @Published var rootEntity = Entity()
+    var freeSquares = Set<Square>()
     var target: Square?
-    var timer: Timer?
+    var setTargetAfter: TimeInterval = 3.0
+    var running = true
+    var score = Score() // find a way to publish this
     
     let gridX = 10
     let gridY = 10
@@ -21,11 +24,7 @@ class Game: ObservableObject {
     let squareSize: Float = 0.05
     
     init() {
-        self.timer = Timer.scheduledTimer(timeInterval: 3,
-                                          target: self,
-                                          selector: #selector(setTarget),
-                                          userInfo: nil,
-                                          repeats: true)
+        startTimer()
     }
     
     func setup(content: RealityViewContent) {
@@ -40,11 +39,12 @@ class Game: ObservableObject {
         for i in 0...gridX {
             var row = [Int: Square]()
             for j in 0...gridY {
-                let gridPlane = Square(size: squareSize, row: i, column: j)
-                gridPlane.model.position.x = Float(i) * gridSpacing
-                gridPlane.model.position.y = Float(j) * gridSpacing
-                row[j] = gridPlane
-                rootEntity.addChild(gridPlane.model)
+                let square = Square(size: squareSize, row: i, column: j)
+                square.model.position.x = Float(i) * gridSpacing
+                square.model.position.y = Float(j) * gridSpacing
+                row[j] = square
+                freeSquares.insert(square)
+                rootEntity.addChild(square.model)
             }
             
             self.grid[i] = row
@@ -52,7 +52,7 @@ class Game: ObservableObject {
     }
     
     func handleClick(row i: Int, column j: Int) {
-        guard let row = grid[i] else {
+        guard var row = grid[i] else {
             print("No row at \(i)")
             print(grid)
             return
@@ -69,19 +69,55 @@ class Game: ObservableObject {
         }
         
         square.handleClick()
+        freeSquares.remove(square)
+        if square.isTarget {
+            row[j] = nil
+            score.hit += 1
+        } else {
+            score.wrong += 1
+        }
+        
+        // Check end condition
+        if freeSquares.isEmpty ||
+            setTargetAfter <= 0.25 {
+            handleGameOver()
+        }
     }
     
-    @objc func setTarget() {
+    func startTimer() {
+        guard running else { return }
+        
+        setTarget()
+        setTargetAfter = setTargetAfter * 0.98
+        DispatchQueue.main.asyncAfter(deadline: .now() + setTargetAfter) {
+            self.startTimer()
+        }
+    }
+    
+    func setTarget() {
         if let target = target {
+            if !target.isClicked {
+                score.missed += 1
+            }
             target.isTarget = false
         }
         
-        let randomX = Int.random(in: 0..<gridX)
-        let randomY = Int.random(in: 0..<gridY)
-        if let row = grid[randomX],
-           let square = row[randomY] {
+        if let square = freeSquares.randomElement() {
+            
             square.isTarget = true
             target = square
         }
     }
+    
+    func handleGameOver() {
+        print("Game Over!")
+        running = false
+        print(score)
+    }
+}
+
+class Score {
+    var hit: Int = 0
+    var wrong: Int = 0
+    var missed: Int = 0
 }

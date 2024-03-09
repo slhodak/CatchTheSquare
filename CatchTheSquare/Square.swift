@@ -10,17 +10,31 @@ import RealityKit
 import RealityKitContent
 
 
-class Square {
+class Square: Hashable {
     static let targetMaterial = SimpleMaterial(color: .orange, roughness: 0.5, isMetallic: false)
     static let clickedMaterial = UnlitMaterial(color: .white)
-    static let basicMaterial = SimpleMaterial(color: .green, roughness: 0.5, isMetallic: false)
+    static let basicMaterial = SimpleMaterial(color: .cyan, roughness: 0.5, isMetallic: false)
+    static let lockedMaterial = SimpleMaterial(color: .red, roughness: 0.5, isMetallic: false)
     
     var model: ModelEntity
+    let row: Int
+    let column: Int
     
+    var isClicked: Bool = false
+    var isLocked: Bool = false
     var isTarget: Bool = false {
         didSet {
             model.model?.materials = isTarget ? [Self.targetMaterial] : [Self.basicMaterial]
         }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(row)
+        hasher.combine(column)
+    }
+    
+    static func == (lhs: Square, rhs: Square) -> Bool {
+        return lhs.row == rhs.row && lhs.column == rhs.column
     }
     
     init(size: Float, row: Int, column: Int) {
@@ -31,13 +45,23 @@ class Square {
         model.components.set(InputTargetComponent())
         model.components.set(SquareIdentifierComponent(row: row, column: column))
         model.name = "SquareModel"
+        
         self.model = model
+        self.row = row
+        self.column = column
     }
     
     func handleClick() {
+        isClicked = true
         model.model?.materials = [Self.clickedMaterial]
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            self.model.model?.materials = [Self.basicMaterial]
+        
+        if isTarget {
+            model.removeFromParent()
+        } else {
+            isLocked = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.model.model?.materials = [Self.lockedMaterial]
+            }
         }
     }
 }

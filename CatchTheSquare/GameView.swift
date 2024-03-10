@@ -12,12 +12,13 @@ import RealityKitContent
 
 struct GameView: View {
     @ObservedObject var game: Game
-    @Environment(\.openWindow) var openWindow
+    @Environment(\.dismissWindow) var dismissWindow
+    @Binding var isOpen: Bool
+    @Binding var controlWindowIsOpen: Bool
     
     var body: some View {
         RealityView { content in
             game.setup(content: content)
-            openWindow(id: "GameControlWindow")
         }
         .gesture(spatialTapToAny)
     }
@@ -40,7 +41,7 @@ struct GameView: View {
     }
 }
 
-#Preview {
-    GameView(game: Game())
-        .previewLayout(.sizeThatFits)
-}
+//#Preview {
+//    GameView(game: Game())
+//        .previewLayout(.sizeThatFits)
+//}

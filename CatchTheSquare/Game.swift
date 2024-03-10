@@ -20,8 +20,8 @@ class Game: ObservableObject {
     var running = false
     var score = Score()
     
-    let gridX = 2
-    let gridY = 2
+    let gridX = 10
+    let gridY = 10
     let gridSpacing: Float = 0.06
     let squareSize: Float = 0.05
     

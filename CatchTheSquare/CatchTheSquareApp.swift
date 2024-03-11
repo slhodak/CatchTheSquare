@@ -20,14 +20,17 @@ struct CatchTheSquareApp: App {
     }
     
     var body: some Scene {
-        WindowGroup {
-            GameView(game: game)
-        }.windowStyle(.volumetric)
-        
         WindowGroup(id: "GameControlWindow") {
-            GameControlView(game: game)
-                .padding()
+            GameControlWindow(game: game)
         }
-        .defaultSize(width: windowHeight * goldenRatio, height: windowHeight, depth: 0.02, in: .meters)
+        .defaultSize(width: windowHeight * goldenRatio,
+                     height: windowHeight,
+                     depth: 0.02,
+                     in: .meters) // Not working
+        
+        WindowGroup(id: "GameVolume") {
+            GameView(game: game)
+        }
+        .windowStyle(.volumetric)
     }
 }

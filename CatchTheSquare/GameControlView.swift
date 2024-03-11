@@ -9,8 +9,10 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-struct GameControlView: View {
+struct GameControlWindow: View {
     @ObservedObject var game: Game
+    @Environment(\.openWindow) var openWindow
+    @Environment(\.dismissWindow) var dismissWindow
     
     var body: some View {
         VStack {
@@ -18,12 +20,15 @@ struct GameControlView: View {
             Text("\(.init(systemName: "eye")) \(.init(systemName: "arrow.forward")) \(.init(systemName: "cursor.rays")) \(.init(systemName: "arrow.forward")) \( .init(systemName: "rectangle.inset.filled.and.cursorarrow"))")
                 .font(.largeTitle)
             
-            Button(game.running ? "Stop" : "Start", action: {
-                if game.running {
-                    game.handleGameOver()
-                } else {
-                    game.start()
-                }
+            Button(game.gridIsShown ? "Reset" : "Show Game", action: {
+                dismissWindow(id: "GameVolume")
+                openWindow(id: "GameVolume")
+            })
+            .font(.largeTitle)
+            .padding()
+            
+            Button(game.running ? "Stop" : "Start Game", action: {
+                game.running ? game.stop() : game.start()
             })
             .font(.largeTitle)
             .padding()
@@ -34,7 +39,7 @@ struct GameControlView: View {
         }
     }
 }
-
-#Preview(windowStyle: .automatic) {
-    GameControlView(game: Game())
-}
+ 
+//#Preview(windowStyle: .automatic) {
+//    GamecontrolWindow(game: Game())
+//}

@@ -31,7 +31,7 @@ struct ScoreView: View {
             
             Button("Main Menu") {
                 presentationMode.wrappedValue.dismiss()
-                game.cleanSlate()
+                game.reset()
             }
         }
         .padding()

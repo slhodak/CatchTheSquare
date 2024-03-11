@@ -15,18 +15,13 @@ struct CatchTheSquareApp: App {
     let windowHeight = 0.2
     let goldenRatio = 1.618
     
-    @State var controlWindowIsOpen: Bool = false
-    @State var gameVolumeIsOpen: Bool = false
-    
     init() {
         SquareIdentifierComponent.registerComponent()
     }
     
     var body: some Scene {
         WindowGroup(id: "GameControlWindow") {
-            GameControlWindow(game: game,
-                              isOpen: $controlWindowIsOpen,
-                              gameVolumeIsOpen: $gameVolumeIsOpen)
+            GameControlWindow(game: game)
                 .padding()
         }
         .defaultSize(width: windowHeight * goldenRatio,
@@ -35,9 +30,7 @@ struct CatchTheSquareApp: App {
                      in: .meters)
         
         WindowGroup(id: "GameVolume") {
-            GameView(game: game,
-                     isOpen: $gameVolumeIsOpen,
-                     controlWindowIsOpen: $controlWindowIsOpen)
+            GameView(game: game)
         }
         .windowStyle(.volumetric)
     }

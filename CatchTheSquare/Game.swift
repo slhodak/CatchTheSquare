@@ -46,12 +46,13 @@ class Game: ObservableObject {
     }
     
     func start() {
-        cleanSlate()
+        reset()
         running = true
         startTimer()
     }
     
-    func cleanSlate() {
+    func reset() {
+        running = false
         erase()
         initGrid()
         realityViewContent?.add(rootEntity)

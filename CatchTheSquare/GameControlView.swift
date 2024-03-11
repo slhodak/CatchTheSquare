@@ -13,8 +13,6 @@ struct GameControlWindow: View {
     @ObservedObject var game: Game
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
-    @Binding var isOpen: Bool
-    @Binding var gameVolumeIsOpen: Bool
     
     var body: some View {
         VStack {
@@ -22,12 +20,11 @@ struct GameControlWindow: View {
             Text("\(.init(systemName: "eye")) \(.init(systemName: "arrow.forward")) \(.init(systemName: "cursor.rays")) \(.init(systemName: "arrow.forward")) \( .init(systemName: "rectangle.inset.filled.and.cursorarrow"))")
                 .font(.largeTitle)
             
-            Toggle(isOn: $gameVolumeIsOpen) {
-                Text("Show Game Grid")
-            }
-            .onChange(of: gameVolumeIsOpen) {
-                gameVolumeIsOpen == true ? openWindow(id: "GameVolume") : dismissWindow(id: "GameVolume")
-            }
+            Button(game.running ? "Reset" : "Show Game", action: {
+                dismissWindow(id: "GameVolume")
+                game.reset()
+                openWindow(id: "GameVolume")
+            })
             .font(.largeTitle)
             .padding()
             

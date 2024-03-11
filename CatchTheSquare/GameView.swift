@@ -13,12 +13,27 @@ import RealityKitContent
 struct GameView: View {
     @ObservedObject var game: Game
     @Environment(\.dismissWindow) var dismissWindow
-    @Binding var isOpen: Bool
-    @Binding var controlWindowIsOpen: Bool
+    @Environment(\.openWindow) var openWindow
     
     var body: some View {
-        RealityView { content in
+        RealityView { content, attachments in
             game.setup(content: content)
+            if let controlsAttachment = attachments.entity(for: "OpenControls") {
+                controlsAttachment.position.y = -0.45
+                controlsAttachment.position.z = 0.2
+                controlsAttachment.orientation = simd_quatf(angle: -15 * Float.pi / 180, axis: [1, 0, 0])
+                content.add(controlsAttachment)
+            }
+        } attachments: {
+            Attachment(id: "OpenControls") {
+                Button("Show Menu", action: {
+                    dismissWindow(id: "GameControlWindow")
+                    openWindow(id: "GameControlWindow")
+                })
+                .glassBackgroundEffect()
+                .font(.largeTitle)
+                .padding()
+            }
         }
         .gesture(spatialTapToAny)
     }

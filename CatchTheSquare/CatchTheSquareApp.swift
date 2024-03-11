@@ -22,12 +22,11 @@ struct CatchTheSquareApp: App {
     var body: some Scene {
         WindowGroup(id: "GameControlWindow") {
             GameControlWindow(game: game)
-                .padding()
         }
         .defaultSize(width: windowHeight * goldenRatio,
                      height: windowHeight,
                      depth: 0.02,
-                     in: .meters)
+                     in: .meters) // Not working
         
         WindowGroup(id: "GameVolume") {
             GameView(game: game)

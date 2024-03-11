@@ -18,6 +18,7 @@ struct GameView: View {
     var body: some View {
         RealityView { content, attachments in
             game.setup(content: content)
+            
             if let controlsAttachment = attachments.entity(for: "OpenControls") {
                 controlsAttachment.position.y = -0.45
                 controlsAttachment.position.z = 0.2

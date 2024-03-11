@@ -13,11 +13,13 @@ class Game: ObservableObject {
     @Published var grid = [Int: [Int: Square]]()
     @Published var rootEntity = Entity()
     @Published var showScoreView: Bool = false
+    @Published var running = false
+    @Published var gridIsShown = false
+    
     var realityViewContent: RealityViewContent?
     var freeSquares = Set<Square>()
     var target: Square?
     var setTargetAfter: TimeInterval = 3.0
-    var running = false
     var score = Score()
     
     let gridX = 10
@@ -30,35 +32,30 @@ class Game: ObservableObject {
         rootEntity.position.z = 0
         rootEntity.position.y = (Float(gridY) * gridSpacing) / 2 * -1
         realityViewContent = content
-        content.add(rootEntity)
+        realityViewContent?.add(rootEntity)
         initGrid()
-    }
-    
-    func erase() {
-        for (_, row) in grid {
-            for (_, square) in row {
-                square.model.removeFromParent()
-                freeSquares.remove(square)
-            }
-        }
-        
-        realityViewContent?.remove(rootEntity)
+        print("Storing RealityViewContent on Game")
     }
     
     func start() {
-        reset()
         running = true
         startTimer()
     }
     
+    func stop() {
+        running = false
+        self.showScoreView = true
+        reset()
+    }
+    
     func reset() {
         running = false
-        erase()
+        eraseGrid()
         initGrid()
-        realityViewContent?.add(rootEntity)
     }
     
     private func initGrid() {
+        print("creating grid")
         for i in 0..<gridX {
             var row = [Int: Square]()
             for j in 0..<gridY {
@@ -72,6 +69,19 @@ class Game: ObservableObject {
             
             self.grid[i] = row
         }
+        gridIsShown = true
+    }
+    
+    private func eraseGrid() {
+        print("erasing grid")
+        for (_, row) in grid {
+            for (_, square) in row {
+                square.model.removeFromParent()
+                freeSquares.remove(square)
+            }
+        }
+        grid = [Int:[Int: Square]]()
+        gridIsShown = false
     }
     
     func handleClick(row i: Int, column j: Int) {
@@ -91,7 +101,7 @@ class Game: ObservableObject {
         
         // Check end condition
         if freeSquares.isEmpty || setTargetAfter <= 0.25 {
-            handleGameOver()
+            stop()
         }
     }
     
@@ -136,10 +146,5 @@ class Game: ObservableObject {
             square.isTarget = true
             target = square
         }
-    }
-    
-    func handleGameOver() {
-        running = false
-        self.showScoreView = true
     }
 }

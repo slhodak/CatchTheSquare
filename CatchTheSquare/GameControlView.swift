@@ -20,16 +20,15 @@ struct GameControlWindow: View {
             Text("\(.init(systemName: "eye")) \(.init(systemName: "arrow.forward")) \(.init(systemName: "cursor.rays")) \(.init(systemName: "arrow.forward")) \( .init(systemName: "rectangle.inset.filled.and.cursorarrow"))")
                 .font(.largeTitle)
             
-            Button(game.running ? "Reset" : "Show Game", action: {
+            Button(game.gridIsShown ? "Reset" : "Show Game", action: {
                 dismissWindow(id: "GameVolume")
-                game.reset()
                 openWindow(id: "GameVolume")
             })
             .font(.largeTitle)
             .padding()
             
             Button(game.running ? "Stop" : "Start Game", action: {
-                game.running ? game.handleGameOver() : game.start()
+                game.running ? game.stop() : game.start()
             })
             .font(.largeTitle)
             .padding()
@@ -40,7 +39,7 @@ struct GameControlWindow: View {
         }
     }
 }
-
+ 
 //#Preview(windowStyle: .automatic) {
 //    GamecontrolWindow(game: Game())
 //}
